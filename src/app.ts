@@ -5,6 +5,7 @@ import { connectDB } from "./config/database";
 import { errorHandler } from "./middlewares/error.middleware";
 import noteRoutes from "./routes/note.routes";
 import userRoutes from "./routes/user.routes";
+import authRoutes from "./routes/auth.route";
 // Load environment variables
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.get("/", (_req: Request, res: Response) => {
 // API Routes
 app.use("/api/notes", noteRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/login", authRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

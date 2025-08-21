@@ -24,7 +24,7 @@ export const createUser = async (req: Request, res: Response) => {
     res.status(201).json({
       success: true,
       message: "User created successfully",
-      data: user,
+      user: user,
     });
   } catch (error: unknown) {
     console.error(error);
@@ -40,8 +40,7 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
     res.status(200).json({
-      success: true,
-      data: users,
+      users: users,
     });
   } catch (error) {
     res.status(400).json({
@@ -50,4 +49,25 @@ export const getUsers = async (req: Request, res: Response) => {
         error instanceof Error ? error.message : "An unknown error occurred",
     });
   }
+}
+
+export const getUserById = async (req: Request, res: Response) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: "User not found",
+        });
+        }
+        res.status(200).json({
+        user: user,
+        });
+    } catch (error) {
+        res.status(400).json({
+        success: false,
+        error:
+            error instanceof Error ? error.message : "An unknown error occurred",
+        });
+    }
 }
