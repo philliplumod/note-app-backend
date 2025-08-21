@@ -25,7 +25,7 @@ app.get("/", (_req: Request, res: Response) => {
 // API Routes
 app.use("/api/notes", noteRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/login", authRoutes);
+app.use("/api/auth", authRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

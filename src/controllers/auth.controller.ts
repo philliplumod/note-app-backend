@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/user.model";
+import TokenBlacklist from "../models/token-blacklist.model";
 import jwt from "jsonwebtoken";
 
 export const loginUser = async (req: Request, res: Response) => {
@@ -22,11 +23,11 @@ export const loginUser = async (req: Request, res: Response) => {
       });
     }
     const token = jwt.sign(
-        { userId: existingUser._id, email: existingUser.email },
-        process.env.JWT_SECRET as string,
-        {
-            expiresIn: "1h",
-        }
+      { userId: existingUser._id, email: existingUser.email },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "1h",
+      }
     );
     res.status(200).json({
       success: true,
@@ -48,4 +49,30 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
+export const logoutUser = async (req: Request, res: Response) => {
+  try {
+    const token = req.token;
 
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "No token provided",
+      });
+    }
+
+    // Add token to blacklist
+    await TokenBlacklist.create({ token });
+
+    res.status(200).json({
+      success: true,
+      message: "Logout successful",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      error:
+        error instanceof Error ? error.message : "An unknown error occurred",
+    });
+  }
+};
